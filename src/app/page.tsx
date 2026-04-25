@@ -229,7 +229,7 @@ export default function Home() {
                 { title: "Private Gallery", desc: "Artwork is stored locally on your device. Nothing is uploaded to public servers." },
                 { title: "No Public Chat", desc: "A closed environment where children can create safely without social media features." },
                 { title: "Kid-Friendly UI", desc: "Big buttons, clear icons, and forgiving touch targets built for little fingers." },
-                { title: "Open Source", desc: "The entire codebase is public, meaning security experts can verify our safety claims." }
+                { title: "Privacy First", desc: "We don't collect personal data or store creations on our servers. Your child's art stays safe on your device." }
               ].map((feature, i) => (
                 <div key={i} className="bg-[#FFF7EC] p-6 rounded-3xl border-2 border-gray-100">
                    <h4 className="font-black text-xl mb-2 flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-[#9BE7C2]"/> {feature.title}</h4>
