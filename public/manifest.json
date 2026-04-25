@@ -1,0 +1,21 @@
+{
+  "name": "Paintify",
+  "short_name": "Paintify",
+  "description": "AI coloring pages for kids that feel magical",
+  "display": "standalone",
+  "background_color": "#FFF7EC",
+  "theme_color": "#FFF7EC",
+  "icons": [
+    {
+      "src": "/globe.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/globe.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
