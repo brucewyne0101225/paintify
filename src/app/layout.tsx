@@ -31,6 +31,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${nunito.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        <link rel="apple-touch-icon" href="/magic-logo.png" />
+      </head>
       <body className="min-h-full flex flex-col font-nunito bg-paintify-bg text-paintify-dark" suppressHydrationWarning>
         <main className="flex-1 flex flex-col">
           {children}
