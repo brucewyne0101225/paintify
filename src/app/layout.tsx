@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     title: "Paintify",
   },
   other: {
-    "apple-touch-icon": "/app-icon.png?v=2",
+    "apple-touch-icon": "/magic-logo.png",
   },
 };
 
