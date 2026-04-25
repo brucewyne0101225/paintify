@@ -63,7 +63,7 @@ export default function Home() {
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mt-4 font-bold text-sm opacity-80 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-500">
               <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-[#9BE7C2]"/> 100% Child Safe</span>
               <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-[#9BE7C2]"/> Works on iPad</span>
-              <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-[#9BE7C2]"/> Free & Open Source</span>
+              <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-[#9BE7C2]"/> Free Application</span>
               <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-[#9BE7C2]"/> No Ads</span>
             </div>
           </div>
@@ -185,9 +185,9 @@ export default function Home() {
             
             <div className="flex-1 flex flex-col gap-8 text-center lg:text-left">
               <h2 className="text-4xl lg:text-5xl font-black leading-tight">Use Paintify on iPad like a real app.</h2>
-              <p className="text-xl font-medium opacity-80 text-gray-300">
-                Since we are free and open source, we bypass the App Store. You can install Paintify directly to your home screen in 3 taps.
-              </p>
+              <p className="text-xl text-gray-400 mb-8 max-w-lg font-medium leading-relaxed">
+              Paintify works as a web app, so you can add it to your iPad Home Screen directly from Safari — no App Store download required.
+            </p>
               
               <ul className="flex flex-col gap-4 text-lg font-bold">
                 <li className="flex items-center gap-4 bg-gray-800 p-4 rounded-2xl border border-gray-700">
@@ -308,11 +308,11 @@ export default function Home() {
                <a href="#how-it-works" className="font-bold hover:text-[#F4C84A]">How it Works</a>
              </div>
              <div className="flex flex-col gap-4">
-               <h4 className="font-black text-gray-500 uppercase tracking-wider text-sm">Legal & Links</h4>
-               <a href="#safety" className="font-bold hover:text-[#9BE7C2]">Child Safety</a>
-               <a href="https://github.com/brucewyne0101225/paintify" className="font-bold hover:text-white">GitHub Code</a>
-               <span className="font-bold text-gray-600 cursor-not-allowed">Privacy Policy</span>
-             </div>
+                <h4 className="font-black text-gray-500 uppercase tracking-wider text-sm">Company</h4>
+                <a href="#safety" className="font-bold hover:text-[#9BE7C2]">Child Safety</a>
+                <span className="font-bold text-gray-400">By Auroze.ca</span>
+                <span className="font-bold text-gray-600 cursor-not-allowed text-xs opacity-50">Privacy Policy Coming Soon</span>
+              </div>
            </div>
         </div>
 
