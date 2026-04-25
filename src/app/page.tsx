@@ -61,10 +61,10 @@ export default function Home() {
             </div>
 
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mt-4 font-bold text-sm opacity-80 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-500">
-              <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-[#9BE7C2]"/> 100% Child Safe</span>
+              <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-[#9BE7C2]"/> Designed with Child Safety First</span>
               <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-[#9BE7C2]"/> Works on iPad</span>
               <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-[#9BE7C2]"/> Free Application</span>
-              <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-[#9BE7C2]"/> No Ads</span>
+              <span className="flex items-center gap-1"><CheckCircle2 className="w-4 h-4 text-[#9BE7C2]"/> No Sign-In Required</span>
             </div>
           </div>
 
@@ -213,25 +213,25 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 9. CHILD SAFETY SECTION */}
+        {/* 9. WHY PARENTS TRUST PAINTIFY */}
         <section id="safety" className="w-full py-24 bg-white border-b-4 border-gray-100">
           <div className="max-w-5xl mx-auto px-6 text-center">
             <ShieldCheck className="w-20 h-20 text-[#9BE7C2] mx-auto mb-8" />
-            <h2 className="text-4xl lg:text-5xl font-black mb-6">Built for children.<br/>Trusted by parents.</h2>
+            <h2 className="text-4xl lg:text-5xl font-black mb-6">Designed for children.<br/>Trusted by parents.</h2>
             <p className="text-xl font-semibold opacity-70 mb-12 max-w-2xl mx-auto">
-              We engineered a bulletproof safety system so you can hand the iPad to your child with total peace of mind.
+              We engineered a safety-focused experience so you can hand the iPad to your child with total peace of mind.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
               {[
-                { title: "Ultra Strict Prompts", desc: "Our AI completely blocks scary, mature, or inappropriate words before generation." },
-                { title: "Zero Advertisements", desc: "No flashing banners, no tracking cookies, and absolutely no sneaky in-app purchases." },
-                { title: "Private Gallery", desc: "Artwork is stored locally on your device. Nothing is uploaded to public servers." },
-                { title: "No Public Chat", desc: "A closed environment where children can create safely without social media features." },
+                { title: "Privacy First", desc: "No child accounts or profiles required. We don't collect personal data." },
+                { title: "Safety Focused", desc: "Strong prompt moderation and family-friendly defaults by design." },
+                { title: "Easy to Use", desc: "Instant coloring fun with no setup. Just open and start creating." },
+                { title: "Zero Advertisements", desc: "No flashing banners, no tracking cookies, and no sneaky in-app purchases." },
                 { title: "Kid-Friendly UI", desc: "Big buttons, clear icons, and forgiving touch targets built for little fingers." },
-                { title: "Privacy First", desc: "We don't collect personal data or store creations on our servers. Your child's art stays safe on your device." }
+                { title: "Device Friendly", desc: "Works perfectly on iPad, tablets, and desktop browsers natively." }
               ].map((feature, i) => (
-                <div key={i} className="bg-[#FFF7EC] p-6 rounded-3xl border-2 border-gray-100">
+                <div key={i} className="bg-[#FFF7EC] p-6 rounded-3xl border-2 border-gray-100 shadow-sm hover:border-[#9BE7C2] transition-colors">
                    <h4 className="font-black text-xl mb-2 flex items-center gap-2"><CheckCircle2 className="w-5 h-5 text-[#9BE7C2]"/> {feature.title}</h4>
                    <p className="font-medium text-gray-600 leading-snug">{feature.desc}</p>
                 </div>
@@ -284,41 +284,42 @@ export default function Home() {
       </main>
 
       {/* 12. FOOTER */}
-      <footer className="w-full bg-[#111] text-white py-16 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center md:items-start gap-12 border-b border-gray-800 pb-12 mb-8">
-           
-           <div className="flex flex-col items-center md:items-start text-center md:text-left gap-4">
-             <div className="flex items-center gap-2 opacity-50 mb-2">
-                <img src="/auroze-logo.png" alt="Auroze Logo" className="w-24 h-auto brightness-0 invert" />
-             </div>
-             <Link href="/" className="flex items-center gap-2">
-                <Palette className="w-8 h-8 text-[#FF7BA7]" strokeWidth={3} />
-                <span className="text-3xl font-black tracking-tight">Paintify</span>
-             </Link>
-             <p className="font-semibold text-gray-400 max-w-xs mt-2">
-               The magical AI coloring studio for kids. Free, open-source, and strictly safe.
-             </p>
-           </div>
-
-           <div className="flex gap-16 text-center md:text-left">
-             <div className="flex flex-col gap-4">
-               <h4 className="font-black text-gray-500 uppercase tracking-wider text-sm">Product</h4>
-               <Link href="/studio" className="font-bold hover:text-[#FF7BA7]">Start Painting</Link>
-               <a href="#library" className="font-bold hover:text-[#8FD3FF]">Library</a>
-               <a href="#how-it-works" className="font-bold hover:text-[#F4C84A]">How it Works</a>
-             </div>
-             <div className="flex flex-col gap-4">
-                <h4 className="font-black text-gray-500 uppercase tracking-wider text-sm">Company</h4>
-                <a href="#safety" className="font-bold hover:text-[#9BE7C2]">Child Safety</a>
-                <span className="font-bold text-gray-400">By Auroze.ca</span>
-                <span className="font-bold text-gray-600 cursor-not-allowed text-xs opacity-50">Privacy Policy Coming Soon</span>
+      <footer className="w-full bg-[#111] text-white py-20 px-6 mt-auto">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 border-b border-gray-800 pb-16">
+          <div className="col-span-1 md:col-span-2 text-center md:text-left flex flex-col items-center md:items-start">
+            <Link href="/" className="flex items-center gap-2 mb-6">
+              <div className="bg-[#FF7BA7] p-2 rounded-xl">
+                <Palette className="w-6 h-6 text-white" strokeWidth={3} />
               </div>
-           </div>
+              <span className="text-2xl font-black tracking-tight">Paintify</span>
+            </Link>
+            <p className="text-gray-400 font-bold max-w-sm mb-8 leading-relaxed">
+              Premium AI coloring studio designed with child safety first. Built with care for children, parents, and educators.
+            </p>
+            <div className="flex gap-4">
+               <span className="bg-gray-800 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-gray-400 border border-gray-700">No Tracking</span>
+               <span className="bg-gray-800 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-gray-400 border border-gray-700">No Ads</span>
+            </div>
+          </div>
+          
+          <div className="flex flex-col gap-4 text-center md:text-left">
+            <h4 className="font-black text-gray-500 uppercase tracking-wider text-sm mb-2">Trust & Safety</h4>
+            <Link href="/privacy" className="font-bold hover:text-[#FF7BA7] transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="font-bold hover:text-[#8FD3FF] transition-colors">Terms of Use</Link>
+            <Link href="/child-safety" className="font-bold hover:text-[#9BE7C2] transition-colors">Child Safety Policy</Link>
+          </div>
+
+          <div className="flex flex-col gap-4 text-center md:text-left">
+            <h4 className="font-black text-gray-500 uppercase tracking-wider text-sm mb-2">Connect</h4>
+            <a href="https://auroze.ca" target="_blank" rel="noopener noreferrer" className="font-bold hover:text-[#F4C84A] transition-colors">AUROZE.CA</a>
+            <a href="https://github.com/brucewyne0101225/paintify" target="_blank" rel="noopener noreferrer" className="font-bold hover:text-white transition-colors">GitHub Repository</a>
+            <a href="mailto:hello@auroze.ca" className="font-bold text-[#FF7BA7] hover:underline">hello@auroze.ca</a>
+          </div>
         </div>
 
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-gray-500 font-bold gap-4 text-center">
-          <p>© {new Date().getFullYear()} Auroze.ca. All rights reserved.</p>
-          <p className="flex items-center justify-center gap-2">Built with <Heart className="w-4 h-4 text-red-500 fill-current" /> for children and parents.</p>
+        <div className="max-w-7xl mx-auto pt-8 flex flex-col sm:flex-row justify-between items-center text-gray-500 font-bold gap-4 text-center">
+          <p>© 2026 Paintify. Developed by AUROZE.CA</p>
+          <p className="flex items-center justify-center gap-2">Built with <Heart className="w-4 h-4 text-red-500 fill-current" /> for the next generation.</p>
         </div>
       </footer>
     </div>
