@@ -312,7 +312,6 @@ export default function Home() {
           <div className="flex flex-col gap-4 text-center md:text-left">
             <h4 className="font-black text-gray-500 uppercase tracking-wider text-sm mb-2">Connect</h4>
             <a href="https://auroze.ca" target="_blank" rel="noopener noreferrer" className="font-bold hover:text-[#F4C84A] transition-colors">AUROZE.CA</a>
-            <a href="https://github.com/brucewyne0101225/paintify" target="_blank" rel="noopener noreferrer" className="font-bold hover:text-white transition-colors">GitHub Repository</a>
             <a href="mailto:hello@auroze.ca" className="font-bold text-[#FF7BA7] hover:underline">hello@auroze.ca</a>
           </div>
         </div>

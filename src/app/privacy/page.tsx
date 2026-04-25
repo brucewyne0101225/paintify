@@ -39,7 +39,7 @@ export default function PrivacyPage() {
                 <li>We do not request child names, emails, or child profiles.</li>
                 <li>We may collect limited anonymous usage information such as browser type, device type, general performance metrics, and feature usage to improve the app experience.</li>
               </ul>
-              <p className="mt-4 font-black text-[#FF7BA7]">Important: We do not sell personal information.</p>Section
+              <p className="mt-4 font-black text-[#FF7BA7]">Important: We do not sell personal information.</p>
             </section>
 
             <section>
