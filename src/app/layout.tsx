@@ -17,6 +17,9 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "Paintify",
   },
+  other: {
+    "apple-touch-icon": "/auroze-logo.png",
+  },
 };
 
 import Navbar from "@/components/Navbar";
