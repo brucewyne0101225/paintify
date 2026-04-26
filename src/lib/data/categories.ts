@@ -86,5 +86,38 @@ export const CATEGORIES = [
       "Fairy sitting on a mushroom",
       "Magic wand casting stars"
     ]
+  },
+  {
+    id: "cats",
+    name: "Cats",
+    icon: "🐱",
+    suggestions: [
+      "Cute kitten playing with yarn",
+      "Cat sleeping on a pillow",
+      "Two cats looking at a butterfly",
+      "A family of cats"
+    ]
+  },
+  {
+    id: "spy-family",
+    name: "Spy Family",
+    icon: "🕵️",
+    suggestions: [
+      "Anya eating peanuts",
+      "Spy agent on a mission",
+      "Bond the dog sleeping",
+      "A happy family walking"
+    ]
+  },
+  {
+    id: "kats-eye",
+    name: "Kat's Eye",
+    icon: "👁️",
+    suggestions: [
+      "Pop stars singing on stage",
+      "Dancing to the music",
+      "Girl group performing",
+      "Beautiful fashion outfits"
+    ]
   }
 ];
