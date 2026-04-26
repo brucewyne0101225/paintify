@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { Palette, Paintbrush, Eraser, Undo, Redo, Download, Sparkles, PenTool, Plus } from "lucide-react";
+import { Palette, Paintbrush, Eraser, Undo, Redo, Download, Sparkles, PenTool, Plus, Maximize, Move, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import StartGate from "@/components/StartGate";
 import { CATEGORIES } from "@/lib/data/categories";
@@ -45,7 +45,7 @@ export default function StudioPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
-  const [tool, setTool] = useState<"brush" | "eraser" | "fill" | "crayon" | "marker">("brush");
+  const [tool, setTool] = useState<"brush" | "eraser" | "fill" | "crayon" | "marker" | "transform">("brush");
   const [color, setColor] = useState(BASIC_COLORS[0]);
   const [brushSize, setBrushSize] = useState(20);
   const [loadingTime, setLoadingTime] = useState(0);
@@ -398,94 +398,116 @@ export default function StudioPage() {
             )}
 
             {/* ------------------------------------------- */}
-            {/* STATE 2: PAINT MODE */}
+            {/* STATE 2: PAINT MODE - OPTIMIZED FOR IPAD */}
             {/* ------------------------------------------- */}
             {sidebarMode === "paint" && (
-              <div className="flex flex-col gap-6 animate-in slide-in-from-right-4 duration-300 pb-8">
+              <div className="flex flex-col gap-4 animate-in slide-in-from-right-4 duration-300 pb-2 h-full">
 
-                {/* Top Action Row */}
-                <div className="grid grid-cols-3 gap-2 mb-2">
+                {/* Top Action Row - COMPACT HORIZONTAL */}
+                <div className="grid grid-cols-3 gap-2 shrink-0">
                   <button
                     onClick={() => canvasRef.current?.download()}
-                    className="flex flex-col items-center justify-center gap-1 p-3 bg-paintify-yellow rounded-2xl kid-border shadow-[2px_2px_0_0_#111] hover:-translate-y-1 transition-transform"
+                    className="flex flex-col items-center justify-center gap-1 p-2 bg-paintify-yellow rounded-xl kid-border shadow-[2px_2px_0_0_#111] hover:-translate-y-1 transition-transform"
                   >
-                    <Download className="w-6 h-6" />
-                    <span className="text-[10px] font-black uppercase">Save</span>
+                    <Download className="w-5 h-5" />
+                    <span className="text-[9px] font-black uppercase">Save</span>
                   </button>
 
                   <button
                     onClick={() => { setSidebarMode("generate"); setMainViewMode("canvas"); setImageUrl(""); }}
-                    className="flex flex-col items-center justify-center gap-1 p-3 bg-white rounded-2xl kid-border shadow-[2px_2px_0_0_#111] hover:-translate-y-1 transition-transform"
+                    className="flex flex-col items-center justify-center gap-1 p-2 bg-white rounded-xl kid-border shadow-[2px_2px_0_0_#111] hover:-translate-y-1 transition-transform"
                   >
-                    <Sparkles className="w-6 h-6 text-paintify-primary" />
-                    <span className="text-[10px] font-black uppercase">New AI</span>
+                    <Sparkles className="w-5 h-5 text-paintify-primary" />
+                    <span className="text-[9px] font-black uppercase">New</span>
                   </button>
 
                   <button
                     onClick={() => setMainViewMode("explore")}
-                    className="flex flex-col items-center justify-center gap-1 p-3 bg-[#8FD3FF] rounded-2xl kid-border shadow-[2px_2px_0_0_#111] hover:-translate-y-1 transition-transform"
+                    className="flex flex-col items-center justify-center gap-1 p-2 bg-[#8FD3FF] rounded-xl kid-border shadow-[2px_2px_0_0_#111] hover:-translate-y-1 transition-transform"
                   >
-                    <Palette className="w-6 h-6" />
-                    <span className="text-[10px] font-black uppercase">Library</span>
+                    <Palette className="w-5 h-5" />
+                    <span className="text-[9px] font-black uppercase">Library</span>
                   </button>
                 </div>
 
-                <div className="h-1 bg-paintify-bg rounded-full shrink-0 my-2"></div>
+                <div className="h-[2px] bg-paintify-bg rounded-full shrink-0"></div>
 
-                <h2 className="text-2xl font-black flex items-center gap-2">🎨 Paintbox</h2>
-
-                {/* TOOL GRID */}
-                <div className="grid grid-cols-4 gap-3">
+                {/* TOOL GRID - COMPACT 5-COLUMN */}
+                <div className="grid grid-cols-5 gap-2 shrink-0">
                   <button
                     onClick={() => setTool("brush")}
-                    className={`p-3 min-h-[64px] kid-border shadow-[2px_2px_0_0_#111] flex flex-col justify-center items-center gap-1 transition-transform ${tool === "brush" ? "bg-paintify-lightBlue scale-105" : "bg-paintify-bg hover:bg-white"}`}
+                    className={`p-2 rounded-xl kid-border shadow-[2px_2px_0_0_#111] flex flex-col justify-center items-center gap-1 transition-transform ${tool === "brush" ? "bg-paintify-lightBlue scale-105" : "bg-paintify-bg hover:bg-white"}`}
                   >
-                    <Paintbrush className="w-7 h-7" /> <span className="text-xs font-bold mt-1">Brush</span>
+                    <Paintbrush className="w-6 h-6" /> <span className="text-[10px] font-bold">Brush</span>
                   </button>
                   <button
                     onClick={() => setTool("marker")}
-                    className={`p-3 min-h-[64px] kid-border shadow-[2px_2px_0_0_#111] flex flex-col justify-center items-center gap-1 transition-transform ${tool === "marker" ? "bg-paintify-lightBlue scale-105" : "bg-paintify-bg hover:bg-white"}`}
+                    className={`p-2 rounded-xl kid-border shadow-[2px_2px_0_0_#111] flex flex-col justify-center items-center gap-1 transition-transform ${tool === "marker" ? "bg-paintify-lightBlue scale-105" : "bg-paintify-bg hover:bg-white"}`}
                   >
-                    <PenTool className="w-7 h-7" /> <span className="text-xs font-bold mt-1">Marker</span>
+                    <PenTool className="w-6 h-6" /> <span className="text-[10px] font-bold">Marker</span>
                   </button>
                   <button
                     onClick={() => setTool("crayon")}
-                    className={`p-3 min-h-[64px] kid-border shadow-[2px_2px_0_0_#111] flex flex-col justify-center items-center gap-1 transition-transform ${tool === "crayon" ? "bg-paintify-lightBlue scale-105" : "bg-paintify-bg hover:bg-white"}`}
+                    className={`p-2 rounded-xl kid-border shadow-[2px_2px_0_0_#111] flex flex-col justify-center items-center gap-1 transition-transform ${tool === "crayon" ? "bg-paintify-lightBlue scale-105" : "bg-paintify-bg hover:bg-white"}`}
                   >
-                    <Palette className="w-7 h-7" /> <span className="text-xs font-bold mt-1">Crayon</span>
+                    <Palette className="w-6 h-6" /> <span className="text-[10px] font-bold">Crayon</span>
                   </button>
                   <button
                     onClick={() => setTool("eraser")}
-                    className={`p-3 min-h-[64px] kid-border shadow-[2px_2px_0_0_#111] flex flex-col justify-center items-center gap-1 transition-transform ${tool === "eraser" ? "bg-paintify-primary text-white scale-105" : "bg-paintify-bg hover:bg-white"}`}
+                    className={`p-2 rounded-xl kid-border shadow-[2px_2px_0_0_#111] flex flex-col justify-center items-center gap-1 transition-transform ${tool === "eraser" ? "bg-paintify-primary text-white scale-105" : "bg-paintify-bg hover:bg-white"}`}
                   >
-                    <Eraser className="w-7 h-7" /> <span className="text-xs font-bold mt-1">Eraser</span>
+                    <Eraser className="w-6 h-6" /> <span className="text-[10px] font-bold">Eraser</span>
+                  </button>
+                  <button
+                    onClick={() => setTool("transform")}
+                    className={`p-2 rounded-xl kid-border shadow-[2px_2px_0_0_#111] flex flex-col justify-center items-center gap-1 transition-transform ${tool === "transform" ? "bg-paintify-yellow scale-105" : "bg-paintify-bg hover:bg-white"}`}
+                  >
+                    <Move className="w-6 h-6" /> <span className="text-[10px] font-bold">Move</span>
                   </button>
                 </div>
 
-                {/* BRUSH SIZE PANEL */}
-                <div className="flex flex-col gap-4 p-5 bg-paintify-bg kid-border rounded-2xl shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)]">
-                  <div className="flex justify-between items-center">
-                    <label className="font-black text-lg text-paintify-dark">Size: {brushSize}px</label>
-                    {/* Circular Live Preview */}
-                    <div className="w-14 h-14 flex items-center justify-center bg-white rounded-xl kid-border shadow-sm overflow-hidden">
+                {tool === "transform" && (
+                   <div className="flex flex-col gap-2 p-3 bg-paintify-bg kid-border rounded-xl animate-in fade-in slide-in-from-top-2 shrink-0">
+                      <p className="text-[10px] font-black text-center opacity-70">Use 1 finger to move, 2 to zoom!</p>
+                      <div className="grid grid-cols-2 gap-2">
+                         <button 
+                           onClick={() => canvasRef.current?.fitImage()}
+                           className="flex items-center justify-center gap-2 bg-white p-2 kid-border shadow-[2px_2px_0_0_#111] font-black text-[10px]"
+                         >
+                           <Maximize className="w-3 h-3" /> Fit Screen
+                         </button>
+                         <button 
+                           onClick={() => canvasRef.current?.resetImage()}
+                           className="flex items-center justify-center gap-2 bg-white p-2 kid-border shadow-[2px_2px_0_0_#111] font-black text-[10px]"
+                         >
+                           <RotateCcw className="w-3 h-3" /> Reset
+                         </button>
+                      </div>
+                   </div>
+                )}
+
+                {/* BRUSH SIZE PANEL - SLIMMER */}
+                <div className="flex flex-col gap-2 p-3 bg-paintify-bg kid-border rounded-xl shrink-0">
+                  <div className="flex justify-between items-center h-8">
+                    <label className="font-black text-sm text-paintify-dark">Size: {brushSize}px</label>
+                    <div className="w-10 h-10 flex items-center justify-center bg-white rounded-lg kid-border shadow-sm">
                       <div
-                        className="rounded-full transition-all duration-100"
+                        className="rounded-full"
                         style={{
-                          width: `${Math.min(brushSize, 48)}px`,
-                          height: `${Math.min(brushSize, 48)}px`,
+                          width: `${Math.min(brushSize / 2, 32)}px`,
+                          height: `${Math.min(brushSize / 2, 32)}px`,
                           backgroundColor: tool === 'eraser' ? '#ffffff' : color,
-                          border: tool === 'eraser' ? '2px dashed #000' : 'none',
+                          border: tool === 'eraser' ? '1px dashed #000' : 'none',
                           opacity: tool === 'marker' ? 0.7 : 1,
-                          boxShadow: tool === 'eraser' ? 'none' : 'inset -2px -2px 6px rgba(0,0,0,0.2)'
                         }}
                       />
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3">
                     <button
                       onClick={() => setBrushSize(Math.max(2, brushSize - 5))}
-                      className="w-12 h-12 flex items-center justify-center kid-border bg-white rounded-full font-black text-xl shadow-[2px_2px_0_0_#111] active:scale-95"
+                      className="w-10 h-10 flex items-center justify-center kid-border bg-white rounded-full font-black shadow-[2px_2px_0_0_#111]"
                     >
                       -
                     </button>
@@ -495,45 +517,48 @@ export default function StudioPage() {
                       max="80"
                       value={brushSize}
                       onChange={(e) => setBrushSize(Number(e.target.value))}
-                      className="flex-1 h-4 bg-white kid-border rounded-full appearance-none cursor-pointer"
+                      className="flex-1 h-3 bg-white kid-border rounded-full appearance-none"
                     />
                     <button
                       onClick={() => setBrushSize(Math.min(80, brushSize + 5))}
-                      className="w-12 h-12 flex items-center justify-center kid-border bg-white rounded-full font-black text-xl shadow-[2px_2px_0_0_#111] active:scale-95"
+                      className="w-10 h-10 flex items-center justify-center kid-border bg-white rounded-full font-black shadow-[2px_2px_0_0_#111]"
                     >
                       +
                     </button>
                   </div>
                 </div>
 
-                {/* Action buttons */}
-                <div className="grid grid-cols-2 gap-3">
+                {/* Action buttons - COMPACT */}
+                <div className="grid grid-cols-2 gap-2 shrink-0">
                   <button
                     onClick={() => canvasRef.current?.undo()}
-                    className="p-3 kid-border shadow-[2px_2px_0_0_#111] bg-white active:bg-gray-200 flex justify-center transition-transform active:scale-95"
+                    className="p-2 kid-border shadow-[2px_2px_0_0_#111] bg-white active:bg-gray-200 flex justify-center items-center gap-2 font-bold text-xs"
                   >
-                    <Undo className="w-6 h-6" /> Undo
+                    <Undo className="w-4 h-4" /> Undo
                   </button>
                   <button
                     onClick={() => canvasRef.current?.redo()}
-                    className="p-3 kid-border shadow-[2px_2px_0_0_#111] bg-white active:bg-gray-200 flex justify-center transition-transform active:scale-95"
+                    className="p-2 kid-border shadow-[2px_2px_0_0_#111] bg-white active:bg-gray-200 flex justify-center items-center gap-2 font-bold text-xs"
                   >
-                    <Redo className="w-6 h-6" /> Redo
+                    <Redo className="w-4 h-4" /> Redo
                   </button>
                 </div>
 
-                <div className="flex flex-col gap-3">
-                  <div className="flex justify-between items-center">
-                    <label className="font-black opacity-80">Colors</label>
-                  </div>
-                  <div className="grid grid-cols-5 gap-3">
+                {/* COLORS - FLEXIBLE GRID */}
+                <div className="flex flex-col gap-2 overflow-hidden flex-1">
+                  <label className="font-black text-xs opacity-80 uppercase tracking-widest shrink-0">Colors</label>
+                  <div className="grid grid-cols-6 gap-2 overflow-y-auto custom-scrollbar p-2 pb-4">
                     {activeColors.map(c => (
                       <button
                         key={c}
-                        onClick={() => setColor(c)}
-                        className={`aspect-square w-full rounded-full kid-border transition-all active:scale-90 ${color === c ? 'scale-[1.20] z-10 shadow-[4px_4px_0_0_#111] ring-4 ring-offset-2 ring-paintify-dark' : 'shadow-[2px_2px_0_0_#111] hover:scale-110'}`}
+                        onClick={() => {
+                          setColor(c);
+                          if (tool === "transform" || tool === "eraser") {
+                            setTool("brush");
+                          }
+                        }}
+                        className={`aspect-square w-full rounded-full kid-border transition-all ${color === c ? 'scale-110 z-10 shadow-[3px_3px_0_0_#111] ring-2 ring-paintify-dark' : 'shadow-[1px_1px_0_0_#111] hover:scale-105'}`}
                         style={{ backgroundColor: c }}
-                        title={c}
                       />
                     ))}
                   </div>
@@ -541,9 +566,9 @@ export default function StudioPage() {
                   {!showExtraColors && (
                     <button
                       onClick={() => setShowExtraColors(true)}
-                      className="mt-2 kid-btn bg-white py-2 flex justify-center items-center gap-2 shadow-[2px_2px_0_0_#111] text-sm opacity-80 hover:opacity-100"
+                      className="shrink-0 kid-btn bg-white py-2 flex justify-center items-center gap-2 shadow-[2px_2px_0_0_#111] text-[10px] font-black opacity-80"
                     >
-                      <Plus className="w-4 h-4" /> Show More Colors
+                      <Plus className="w-3 h-3" /> MORE COLORS
                     </button>
                   )}
                 </div>

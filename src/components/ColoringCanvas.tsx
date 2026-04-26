@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useRef, forwardRef, useImperativeHandle, useEffect } from "react";
-import { Stage, Layer, Image as KonvaImage, Line, Rect } from "react-konva";
+import { Stage, Layer, Image as KonvaImage, Line, Rect, Transformer, Group } from "react-konva";
 
 interface CanvasProps {
   imageUrl: string;
-  tool: "brush" | "eraser" | "fill" | "crayon" | "marker";
+  tool: "brush" | "eraser" | "fill" | "crayon" | "marker" | "transform";
   color: string;
   brushSize: number;
 }
@@ -14,18 +14,23 @@ export interface CanvasRef {
   undo: () => void;
   redo: () => void;
   download: () => void;
+  fitImage: () => void;
+  resetImage: () => void;
 }
 
 const ColoringCanvas = forwardRef<CanvasRef, CanvasProps>(({ imageUrl, tool, color, brushSize }, ref) => {
   const [processedImg, setProcessedImg] = useState<HTMLImageElement | null>(null);
-  const [imgPos, setImgPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [groupPos, setGroupPos] = useState({ x: 0, y: 0, scaleX: 1, scaleY: 1, rotation: 0 });
   const [croppedDim, setCroppedDim] = useState({ width: 0, height: 0 });
   const [canvasDim, setCanvasDim] = useState({ width: 1000, height: 1000 });
   
   const [lines, setLines] = useState<any[]>([]);
   const [history, setHistory] = useState<any[][]>([]);
   const isDrawing = useRef(false);
+  
   const stageRef = useRef<any>(null);
+  const groupRef = useRef<any>(null);
+  const trRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Dynamic Retina Canvas Sizing
@@ -44,10 +49,17 @@ const ColoringCanvas = forwardRef<CanvasRef, CanvasProps>(({ imageUrl, tool, col
     return () => window.removeEventListener("resize", updateSize);
   }, []);
 
-  // MAGIC BOUNDING BOX TRIMMING (Runs only when imageUrl changes)
+  // Transformer logic
+  useEffect(() => {
+    if (tool === "transform" && trRef.current && groupRef.current) {
+      trRef.current.nodes([groupRef.current]);
+      trRef.current.getLayer().batchDraw();
+    }
+  }, [tool, processedImg]);
+
+  // MAGIC BOUNDING BOX TRIMMING & STENCIL CREATION
   useEffect(() => {
     if (!imageUrl) return;
-    
     setProcessedImg(null);
 
     const img = new window.Image();
@@ -71,17 +83,16 @@ const ColoringCanvas = forwardRef<CanvasRef, CanvasProps>(({ imageUrl, tool, col
           const i = (y * tempCanvas.width + x) * 4;
           const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
           
-          // If pixel is transparent, ignore it
           if (a < 10) continue;
 
           if (r < 240 || g < 240 || b < 240) {
-            // It's a dark line pixel
+            // Dark pixel: keep it for bounding box
             if (x < minX) minX = x;
             if (y < minY) minY = y;
             if (x > maxX) maxX = x;
             if (y > maxY) maxY = y;
           } else {
-            // Force white pixels to be completely transparent so the drawing shows through perfectly!
+            // White pixel: Make it transparent so we can color underneath it!
             data[i+3] = 0; 
           }
         }
@@ -125,8 +136,7 @@ const ColoringCanvas = forwardRef<CanvasRef, CanvasProps>(({ imageUrl, tool, col
     };
   }, [imageUrl]);
 
-  // DYNAMIC CENTERING: Repositions drawing beautifully whenever window resizes
-  useEffect(() => {
+  const calculateDefaultPos = () => {
     if (croppedDim.width > 0 && canvasDim.width > 0) {
       const targetCoverage = 0.85; 
       const maxDrawSize = Math.min(canvasDim.width, canvasDim.height) * targetCoverage;
@@ -142,13 +152,20 @@ const ColoringCanvas = forwardRef<CanvasRef, CanvasProps>(({ imageUrl, tool, col
         drawWidth = drawHeight * aspect;
       }
 
-      setImgPos({
+      const scale = drawWidth / croppedDim.width;
+
+      setGroupPos({
         x: (canvasDim.width - drawWidth) / 2,
         y: (canvasDim.height - drawHeight) / 2,
-        width: drawWidth,
-        height: drawHeight
+        scaleX: scale,
+        scaleY: scale,
+        rotation: 0
       });
     }
+  };
+
+  useEffect(() => {
+    calculateDefaultPos();
   }, [croppedDim, canvasDim]);
 
   useImperativeHandle(ref, () => ({
@@ -166,44 +183,98 @@ const ColoringCanvas = forwardRef<CanvasRef, CanvasProps>(({ imageUrl, tool, col
     },
     download: () => {
       if (stageRef.current) {
-        const uri = stageRef.current.toDataURL({ pixelRatio: 1 }); // Already 2x scale
-        const link = document.createElement("a");
-        link.download = "paintify-artwork.png";
-        link.href = uri;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // Temporarily deselect to hide transform handles
+        if (trRef.current) trRef.current.nodes([]);
+        
+        // Timeout to ensure react renders the hidden transformer before export
+        setTimeout(() => {
+           const uri = stageRef.current.toDataURL({ pixelRatio: 1 });
+           const link = document.createElement("a");
+           link.download = "paintify-artwork.png";
+           link.href = uri;
+           document.body.appendChild(link);
+           link.click();
+           document.body.removeChild(link);
+           
+           // Re-attach if we were in transform mode
+           if (tool === "transform" && trRef.current && groupRef.current) {
+              trRef.current.nodes([groupRef.current]);
+           }
+        }, 50);
       }
+    },
+    fitImage: () => {
+      if (!processedImg) return;
+      const stageW = canvasDim.width;
+      const stageH = canvasDim.height;
+      const aspect = croppedDim.width / croppedDim.height;
+      const stageAspect = stageW / stageH;
+
+      let newW, newH;
+      if (aspect > stageAspect) {
+        newW = stageW;
+        newH = newW / aspect;
+      } else {
+        newH = stageH;
+        newW = newH * aspect;
+      }
+
+      const scale = newW / croppedDim.width;
+
+      setGroupPos({
+        x: (stageW - newW) / 2,
+        y: (stageH - newH) / 2,
+        scaleX: scale,
+        scaleY: scale,
+        rotation: 0
+      });
+    },
+    resetImage: () => {
+      calculateDefaultPos();
     }
   }));
 
   const handleMouseDown = (e: any) => {
+    if (tool === "transform") return;
+    
     isDrawing.current = true;
     const stage = e.target.getStage();
-    if (!stage) return;
+    if (!stage || !groupRef.current) return;
     
     const pos = stage.getPointerPosition();
-    if (!pos) return; // Prevent crashes on touch screens
+    if (!pos) return; 
     
-    // Konva automatically maps screen coordinates to Stage coordinates, no need to scale by 2!
-    setLines([...lines, { tool, color, size: brushSize * 2, points: [pos.x, pos.y] }]);
+    // ADVANCED MATH: Convert screen click into Group-relative coordinates!
+    const transform = groupRef.current.getAbsoluteTransform().copy();
+    transform.invert();
+    const relativePos = transform.point(pos);
+    
+    // Scale the brush size dynamically so it stays consistent relative to zoom
+    const currentScale = groupRef.current.scaleX();
+    const dynamicSize = (brushSize * 2) / currentScale;
+
+    setLines([...lines, { tool, color, size: dynamicSize, points: [relativePos.x, relativePos.y] }]);
     setHistory([]);
   };
 
   const handleMouseMove = (e: any) => {
-    if (!isDrawing.current) return;
+    if (!isDrawing.current || tool === "transform") return;
     
     const stage = e.target.getStage();
-    if (!stage) return;
+    if (!stage || !groupRef.current) return;
 
-    const point = stage.getPointerPosition();
-    if (!point) return;
+    const pos = stage.getPointerPosition();
+    if (!pos) return;
+    
+    // ADVANCED MATH: Convert screen movement into Group-relative coordinates
+    const transform = groupRef.current.getAbsoluteTransform().copy();
+    transform.invert();
+    const relativePos = transform.point(pos);
     
     const newLines = [...lines];
     let lastLine = { ...newLines[newLines.length - 1] };
     
-    // Konva automatically maps screen coordinates to Stage coordinates, no need to scale by 2!
-    lastLine.points = lastLine.points.concat([point.x, point.y]);
+    lastLine.points = lastLine.points.concat([relativePos.x, relativePos.y]);
     newLines.splice(newLines.length - 1, 1, lastLine);
     setLines(newLines);
   };
@@ -225,43 +296,78 @@ const ColoringCanvas = forwardRef<CanvasRef, CanvasProps>(({ imageUrl, tool, col
           onPointerUp={handleMouseUp}
           onPointerLeave={handleMouseUp}
         >
-          {/* All elements must exist on a SINGLE Layer for globalCompositeOperation to work properly! */}
           <Layer>
-            {/* 1. Background White Solid (for proper exporting and no border lines) */}
-            <Rect
-              x={0}
-              y={0}
-              width={canvasDim.width}
-              height={canvasDim.height}
-              fill="white"
-            />
-          
-            {/* 2. The Drawing layer, drawn over the white background */}
-            {lines.map((line, i) => (
-              <Line
-                key={i}
-                points={line.points}
-                stroke={line.tool === 'eraser' ? 'white' : line.color}
-                strokeWidth={line.size}
-                tension={0.5}
-                lineCap="round"
-                lineJoin="round"
-                opacity={line.tool === 'marker' ? 0.7 : 1}
-                globalCompositeOperation={
-                  line.tool === 'eraser' ? 'destination-out' : 'source-over'
-                }
-              />
-            ))}
-
-            {/* 3. The Line Art Image, trimmed and mathematically centered */}
+            {/* The Main Group containing the Paper, Strokes, and Stencil */}
             {processedImg && (
-              <KonvaImage
-                image={processedImg}
-                x={imgPos.x}
-                y={imgPos.y}
-                width={imgPos.width}
-                height={imgPos.height}
-                listening={false}
+              <Group
+                ref={groupRef}
+                {...groupPos}
+                draggable={tool === "transform"}
+                onDragEnd={(e) => {
+                  setGroupPos({
+                    ...groupPos,
+                    x: e.target.x(),
+                    y: e.target.y(),
+                  });
+                }}
+                onTransformEnd={(e) => {
+                  const node = groupRef.current;
+                  setGroupPos({
+                    x: node.x(),
+                    y: node.y(),
+                    scaleX: node.scaleX(),
+                    scaleY: node.scaleY(),
+                    rotation: node.rotation()
+                  });
+                }}
+              >
+                {/* 1. The Canvas Paper */}
+                <Rect
+                  x={0}
+                  y={0}
+                  width={croppedDim.width}
+                  height={croppedDim.height}
+                  fill="white"
+                />
+              
+                {/* 2. The Drawing Strokes (Under the Stencil) */}
+                {lines.map((line, i) => (
+                  <Line
+                    key={i}
+                    points={line.points}
+                    // Eraser simply paints pure white over the colors
+                    stroke={line.tool === 'eraser' ? 'white' : line.color}
+                    strokeWidth={line.size}
+                    tension={0.5}
+                    lineCap="round"
+                    lineJoin="round"
+                    opacity={line.tool === 'marker' ? 0.7 : 1}
+                  />
+                ))}
+
+                {/* 3. The Line Art Stencil (On Top) */}
+                <KonvaImage
+                  image={processedImg}
+                  x={0}
+                  y={0}
+                  width={croppedDim.width}
+                  height={croppedDim.height}
+                  listening={false} // Lets clicks pass through to the paper for drawing
+                />
+              </Group>
+            )}
+
+            {/* Transform Handles */}
+            {tool === "transform" && (
+              <Transformer
+                ref={trRef}
+                keepRatio={true}
+                boundBoxFunc={(oldBox, newBox) => {
+                  if (newBox.width < 50 || newBox.height < 50) {
+                    return oldBox;
+                  }
+                  return newBox;
+                }}
               />
             )}
           </Layer>
