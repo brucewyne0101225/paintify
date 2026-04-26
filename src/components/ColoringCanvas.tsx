@@ -362,6 +362,14 @@ const ColoringCanvas = forwardRef<CanvasRef, CanvasProps>(({ imageUrl, tool, col
               <Transformer
                 ref={trRef}
                 keepRatio={true}
+                anchorSize={45}
+                anchorCornerRadius={25}
+                borderStrokeWidth={5}
+                anchorStrokeWidth={5}
+                borderStroke="#111111"
+                anchorStroke="#111111"
+                anchorFill="#FFD700"
+                padding={15}
                 boundBoxFunc={(oldBox, newBox) => {
                   if (newBox.width < 50 || newBox.height < 50) {
                     return oldBox;
