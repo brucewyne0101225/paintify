@@ -36,7 +36,6 @@ export default function StudioPage() {
   // UX Sidebar Wizard States
   const [sidebarMode, setSidebarMode] = useState<"generate" | "paint">("generate");
   const [mainViewMode, setMainViewMode] = useState<"welcome" | "explore" | "canvas">("welcome");
-  const [showExtraColors, setShowExtraColors] = useState(false);
   const [exploreFilter, setExploreFilter] = useState("All");
 
   // Generation & Tools State
@@ -111,7 +110,6 @@ export default function StudioPage() {
       if (data.imageUrl) {
         setImageUrl(data.imageUrl);
         setSidebarMode("paint"); // Auto switch to paint mode
-        setShowExtraColors(false); // Reset colors to simple
       } else {
         if (data.error && data.error.includes("can't be created in Paintify")) {
           setIsBlocked(true);
@@ -137,7 +135,7 @@ export default function StudioPage() {
     return <StartGate onComplete={handleOnboardingComplete} />;
   }
 
-  const activeColors = showExtraColors ? ALL_COLORS : BASIC_COLORS;
+  const activeColors = ALL_COLORS;
   const exploreCategories = ["All", ...Array.from(new Set(EXPLORE_LIBRARY.map(item => item.category)))];
   const filteredLibrary = exploreFilter === "All" ? EXPLORE_LIBRARY : EXPLORE_LIBRARY.filter(item => item.category === exploreFilter);
 
@@ -285,7 +283,7 @@ export default function StudioPage() {
                Paintify
             </span>
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
-              Developed by AUROZE.CA
+              Developed by AUROZE
             </span>
           </div>
         </div>
@@ -334,32 +332,28 @@ export default function StudioPage() {
             {/* STATE 1: GENERATE MODE */}
             {/* ------------------------------------------- */}
             {sidebarMode === "generate" && (
-              <div className="flex flex-col gap-4 animate-in slide-in-from-left-4 duration-300">
-                <h2 className="text-2xl font-black flex items-center gap-2 mb-2">
-                  <Sparkles className="text-paintify-yellow w-6 h-6" />
-                  Create Art
-                </h2>
+              <div className="flex flex-col gap-3 animate-in slide-in-from-left-4 duration-300 pb-2 h-full">
 
-                <div className="flex flex-col gap-2">
-                  <label className="font-bold opacity-80 text-sm">Theme Category</label>
-                  <select
-                    className="px-4 py-3 bg-paintify-bg kid-border outline-none cursor-pointer font-semibold"
+                <div className="flex flex-col gap-1 shrink-0">
+                  <label className="font-black text-[10px] text-paintify-dark opacity-80 uppercase tracking-wider">Theme Category</label>
+                  <select 
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
+                    className="kid-input py-2 px-3 text-sm font-bold appearance-none bg-white bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23111%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px_12px] bg-no-repeat bg-[position:right_12px_center]"
                   >
                     {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
                   </select>
                 </div>
 
-                <div className="flex flex-col gap-2">
-                  <label className="font-bold opacity-80 text-sm">Magic Ideas</label>
-                  <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-1 shrink-0">
+                  <label className="font-black text-[10px] text-paintify-dark opacity-80 uppercase tracking-wider">Magic Ideas</label>
+                  <div className="grid grid-cols-2 gap-2">
                     {currentCategoryData?.suggestions.map((suggestion, idx) => (
                       <button
                         key={idx}
                         onClick={() => setPrompt(suggestion)}
-                        className={`text-left p-3 kid-border font-bold transition-transform active:scale-95 text-sm
-                          ${prompt === suggestion ? 'bg-paintify-yellow shadow-[4px_4px_0_0_#111]' : 'bg-paintify-bg hover:bg-[#ffeccf]'}`}
+                        className={`text-left p-2 kid-border font-bold transition-transform active:scale-95 text-[10px] leading-tight rounded-xl flex items-center min-h-[48px]
+                          ${prompt === suggestion ? 'bg-paintify-yellow shadow-[2px_2px_0_0_#111] scale-105 z-10' : 'bg-white hover:bg-paintify-yellow hover:scale-105 shadow-[2px_2px_0_0_#111]'}`}
                       >
                         {suggestion}
                       </button>
@@ -367,31 +361,30 @@ export default function StudioPage() {
                   </div>
                 </div>
 
-                <div className="mt-2">
-                  <label className="font-bold opacity-80 text-sm">Or type your own magical idea:</label>
+                <div className="flex flex-col flex-1 min-h-[60px] mt-1">
                   <textarea
                     rows={2}
-                    placeholder="A cute dragon eating pizza..."
-                    className="mt-1 px-4 py-3 bg-paintify-bg kid-border outline-none focus:border-paintify-primary w-full font-semibold resize-none"
+                    placeholder="Or type your own magical idea here (e.g. A cute dragon eating pizza...)"
+                    className="kid-input w-full h-full p-3 resize-none text-sm placeholder:opacity-50"
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                   />
                 </div>
 
-                <div className="flex flex-col gap-3 mt-4">
+                <div className="flex flex-col gap-2 mt-2 shrink-0">
                   <button
                     onClick={handleGenerate}
                     disabled={isGenerating || !prompt}
-                    className="kid-btn bg-paintify-green disabled:opacity-50 disabled:active:translate-y-0 disabled:active:shadow-[4px_4px_0_0_#111] flex justify-center items-center gap-2 py-4 text-xl"
+                    className="kid-btn bg-paintify-green disabled:opacity-50 disabled:active:translate-y-0 disabled:active:shadow-[2px_2px_0_0_#111] flex justify-center items-center gap-2 py-3 text-lg shadow-[2px_2px_0_0_#111]"
                   >
                     {isGenerating ? "Drawing..." : "Generate Lines!"}
                   </button>
 
                   <button
                     onClick={() => setMainViewMode("explore")}
-                    className="kid-btn bg-white kid-border text-paintify-dark shadow-[2px_2px_0_0_#111] flex justify-center items-center gap-2 py-3 text-lg hover:bg-gray-50"
+                    className="kid-btn bg-[#8FD3FF] kid-border text-paintify-dark shadow-[2px_2px_0_0_#111] flex justify-center items-center gap-2 py-2 text-sm hover:bg-[#7bc8fc]"
                   >
-                    <Sparkles className="w-5 h-5 text-paintify-yellow" /> Explore Magic Library
+                    <Sparkles className="w-4 h-4 text-white" /> Explore Magic Library
                   </button>
                 </div>
               </div>
@@ -430,10 +423,8 @@ export default function StudioPage() {
                   </button>
                 </div>
 
-                <div className="h-[2px] bg-paintify-bg rounded-full shrink-0"></div>
-
                 {/* TOOL GRID - COMPACT 5-COLUMN */}
-                <div className="grid grid-cols-5 gap-2 shrink-0">
+                <div className="grid grid-cols-5 gap-2 shrink-0 mt-1">
                   <button
                     onClick={() => setTool("brush")}
                     className={`p-2 rounded-xl kid-border shadow-[2px_2px_0_0_#111] flex flex-col justify-center items-center gap-1 transition-transform ${tool === "brush" ? "bg-paintify-lightBlue scale-105" : "bg-paintify-bg hover:bg-white"}`}
@@ -486,67 +477,55 @@ export default function StudioPage() {
                    </div>
                 )}
 
-                {/* BRUSH SIZE PANEL - SLIMMER */}
-                <div className="flex flex-col gap-2 p-3 bg-paintify-bg kid-border rounded-xl shrink-0">
-                  <div className="flex justify-between items-center h-8">
-                    <label className="font-black text-sm text-paintify-dark">Size: {brushSize}px</label>
-                    <div className="w-10 h-10 flex items-center justify-center bg-white rounded-lg kid-border shadow-sm">
-                      <div
-                        className="rounded-full"
-                        style={{
-                          width: `${Math.min(brushSize / 2, 32)}px`,
-                          height: `${Math.min(brushSize / 2, 32)}px`,
-                          backgroundColor: tool === 'eraser' ? '#ffffff' : color,
-                          border: tool === 'eraser' ? '1px dashed #000' : 'none',
-                          opacity: tool === 'marker' ? 0.7 : 1,
-                        }}
-                      />
+                {/* BRUSH SIZE PANEL - ULTRA SLIM ONE-LINER */}
+                <div className="flex items-center justify-between gap-2 p-2 bg-paintify-bg kid-border rounded-xl shrink-0">
+                  <div className="w-8 h-8 flex items-center justify-center bg-white rounded-lg kid-border shadow-[1px_1px_0_0_#111] shrink-0">
+                    <div
+                      className="rounded-full"
+                      style={{
+                        width: `${Math.min(brushSize / 2, 24)}px`,
+                        height: `${Math.min(brushSize / 2, 24)}px`,
+                        backgroundColor: tool === 'eraser' ? '#ffffff' : color,
+                        border: tool === 'eraser' ? '1px dashed #000' : 'none',
+                        opacity: tool === 'marker' ? 0.7 : 1,
+                      }}
+                    />
+                  </div>
+                  <button
+                    onClick={() => setBrushSize(Math.max(2, brushSize - 5))}
+                    className="w-8 h-8 flex items-center justify-center kid-border bg-white rounded-full font-black shadow-[1px_1px_0_0_#111] shrink-0 leading-none pb-1"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="range"
+                    min="2"
+                    max="80"
+                    value={brushSize}
+                    onChange={(e) => setBrushSize(Number(e.target.value))}
+                    className="flex-1 h-2 bg-white kid-border rounded-full appearance-none min-w-[50px]"
+                  />
+                  <button
+                    onClick={() => setBrushSize(Math.min(80, brushSize + 5))}
+                    className="w-8 h-8 flex items-center justify-center kid-border bg-white rounded-full font-black shadow-[1px_1px_0_0_#111] shrink-0 leading-none pb-1"
+                  >
+                    +
+                  </button>
+                </div>
+
+                {/* COLORS & ACTIONS - FLEXIBLE GRID */}
+                <div className="flex flex-col gap-2 overflow-hidden flex-1 mt-1">
+                  <div className="flex justify-between items-center shrink-0">
+                    <label className="font-black text-xs opacity-80 uppercase tracking-widest">Colors</label>
+                    <div className="flex gap-2">
+                      <button onClick={() => canvasRef.current?.undo()} className="px-3 py-1.5 kid-border shadow-[2px_2px_0_0_#111] bg-white active:bg-gray-200 flex items-center gap-1 font-bold text-[10px] rounded-lg">
+                        <Undo className="w-3 h-3" /> Undo
+                      </button>
+                      <button onClick={() => canvasRef.current?.redo()} className="px-3 py-1.5 kid-border shadow-[2px_2px_0_0_#111] bg-white active:bg-gray-200 flex items-center gap-1 font-bold text-[10px] rounded-lg">
+                        <Redo className="w-3 h-3" /> Redo
+                      </button>
                     </div>
                   </div>
-
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => setBrushSize(Math.max(2, brushSize - 5))}
-                      className="w-10 h-10 flex items-center justify-center kid-border bg-white rounded-full font-black shadow-[2px_2px_0_0_#111]"
-                    >
-                      -
-                    </button>
-                    <input
-                      type="range"
-                      min="2"
-                      max="80"
-                      value={brushSize}
-                      onChange={(e) => setBrushSize(Number(e.target.value))}
-                      className="flex-1 h-3 bg-white kid-border rounded-full appearance-none"
-                    />
-                    <button
-                      onClick={() => setBrushSize(Math.min(80, brushSize + 5))}
-                      className="w-10 h-10 flex items-center justify-center kid-border bg-white rounded-full font-black shadow-[2px_2px_0_0_#111]"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                {/* Action buttons - COMPACT */}
-                <div className="grid grid-cols-2 gap-2 shrink-0">
-                  <button
-                    onClick={() => canvasRef.current?.undo()}
-                    className="p-2 kid-border shadow-[2px_2px_0_0_#111] bg-white active:bg-gray-200 flex justify-center items-center gap-2 font-bold text-xs"
-                  >
-                    <Undo className="w-4 h-4" /> Undo
-                  </button>
-                  <button
-                    onClick={() => canvasRef.current?.redo()}
-                    className="p-2 kid-border shadow-[2px_2px_0_0_#111] bg-white active:bg-gray-200 flex justify-center items-center gap-2 font-bold text-xs"
-                  >
-                    <Redo className="w-4 h-4" /> Redo
-                  </button>
-                </div>
-
-                {/* COLORS - FLEXIBLE GRID */}
-                <div className="flex flex-col gap-2 overflow-hidden flex-1">
-                  <label className="font-black text-xs opacity-80 uppercase tracking-widest shrink-0">Colors</label>
                   <div className="grid grid-cols-6 gap-2 overflow-y-auto custom-scrollbar p-2 pb-4">
                     {activeColors.map(c => (
                       <button
@@ -562,15 +541,6 @@ export default function StudioPage() {
                       />
                     ))}
                   </div>
-
-                  {!showExtraColors && (
-                    <button
-                      onClick={() => setShowExtraColors(true)}
-                      className="shrink-0 kid-btn bg-white py-2 flex justify-center items-center gap-2 shadow-[2px_2px_0_0_#111] text-[10px] font-black opacity-80"
-                    >
-                      <Plus className="w-3 h-3" /> MORE COLORS
-                    </button>
-                  )}
                 </div>
               </div>
             )}
